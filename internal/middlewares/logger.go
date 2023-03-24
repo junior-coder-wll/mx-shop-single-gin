@@ -7,11 +7,9 @@
 package middlewares
 
 import (
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -55,43 +53,4 @@ func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 			logger.Info("Request processed", logFields...)
 		}
 	}
-}
-
-//
-// NewLogger
-//  @Description: 初始化zap的logger对象
-//  @param logPath
-//  @return *zap.Logger
-//
-func NewLogger(logPath string, maxSize int, maxAge int) *zap.Logger {
-	encoderConfig := zap.NewProductionEncoderConfig()
-	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-
-	// 定义日志切割的参数 当然下面的配置也可以从配置文件中读取，这里为了方便就不写了
-	h := &lumberjack.Logger{
-		Filename:   logPath,
-		MaxSize:    maxSize, // 单位MB
-		MaxBackups: 30,
-		MaxAge:     maxAge, // 单位天
-		Compress:   false,
-	}
-
-	// 定义两个输出流，一个输出到控制台，一个输出到文件
-	core := zapcore.NewTee(
-		zapcore.NewCore(
-			zapcore.NewConsoleEncoder(encoderConfig),
-			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout)),
-			zapcore.InfoLevel,
-		),
-		zapcore.NewCore(
-			zapcore.NewJSONEncoder(encoderConfig),
-			zapcore.NewMultiWriteSyncer(zapcore.AddSync(h)),
-			zapcore.InfoLevel,
-		),
-	)
-
-	lg := zap.New(core)
-	zap.ReplaceGlobals(lg) // 替换zap包中全局的logger实例，之后在项目中使用 zap.L().xxx即可使用日志
-	return lg
 }
