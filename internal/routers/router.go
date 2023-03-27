@@ -15,7 +15,7 @@ import (
 
 func InitRouter(lg *zap.Logger) *gin.Engine {
 	r := gin.New()
-	r.Use(middlewares.LoggerMiddleware(lg))
+	r.Use(middlewares.LoggerMiddleware(lg), middlewares.ErrorMiddleware())
 
 	naRouter := r.Group("/api/v1/na")
 	{

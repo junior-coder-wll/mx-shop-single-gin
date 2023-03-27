@@ -7,13 +7,12 @@
 package naHandler
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
 func HelloController(c *gin.Context) {
 	zap.L().Error("这里报错啦")
-	c.JSON(200, gin.H{
-		"msg": "傻逼",
-	})
+	c.Error(errors.New("老子日你妈"))
 }

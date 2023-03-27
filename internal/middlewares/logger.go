@@ -14,6 +14,12 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+//
+// LoggerMiddleware
+//  @Description: logger middleware
+//  @param logger
+//  @return gin.HandlerFunc
+//
 func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 获取请求开始时间
